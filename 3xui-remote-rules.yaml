@@ -1,0 +1,198 @@
+# ══════════════════════════════════════════════════════════════════════════
+#  Loyalsoldier/clash-rules —— 3x-ui「全局路由规则 · 远程 URL」版本
+#  规则源：https://github.com/Loyalsoldier/clash-rules（release 分支）
+#  生成时间：2026-10-03
+#
+#  【用法】
+#  把本文件放到一个 https 地址上（GitHub raw / jsDelivr / 自己的域名都行），
+#  然后粘进 3x-ui → 订阅设置 → 全局路由规则（必须同时打开「启用路由」）。
+#  3x-ui 只认三个键：proxy-groups / rule-providers / rules，其余静默忽略。
+#  拉取超时 6 秒、文件上限 2 MiB、缓存 10 分钟、失败保留上次有效值。
+#  不能用 /clash-legacy/ 端点（legacy 会忽略自定义路由）。
+#
+#  【策略名说明】
+#  3x-ui 一定会生成一个叫 PROXY 的组，所以这里走代理一律写 PROXY。
+#  若你在 3x-ui 里另有同名分组，把全文 PROXY 全局替换成那个名字即可。
+#
+#  【国内 VPS 注意】
+#  下面的 url 全部是 raw.githubusercontent.com，国内 VPS 6 秒内大概率拉不到。
+#  换 jsDelivr：把每行 url 里的
+#    https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/
+#  替换成
+#    https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/
+# ══════════════════════════════════════════════════════════════════════════
+
+rule-providers:
+
+  # ── 进程规则（frpc 等本地程序，强制直连，避免把本地服务绕进代理）
+  #    镜像地址（国内直连）：https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt
+  applications:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/applications.txt"
+    path: ./ruleset/applications.yaml
+
+  # ── 私有网络 / 路由器后台域名（instant.arubanetworks.com 之类）
+  private:
+    type: http
+    behavior: domain
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/private.txt"
+    path: ./ruleset/private.yaml
+
+  # ── 广告与跟踪域名（18.6 万条，最大的一个集合，首次加载约 5.4 MB）
+  reject:
+    type: http
+    behavior: domain
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/reject.txt"
+    path: ./ruleset/reject.yaml
+
+  # ── iCloud 相关（走代理会导致「系统设置」「照片同步」卡死）
+  icloud:
+    type: http
+    behavior: domain
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/icloud.txt"
+    path: ./ruleset/icloud.yaml
+
+  # ── Apple 服务（App Store / 推送 / Apple TV）
+  apple:
+    type: http
+    behavior: domain
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/apple.txt"
+    path: ./ruleset/apple.yaml
+
+  # ── Google 全家桶
+  google:
+    type: http
+    behavior: domain
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/google.txt"
+    path: ./ruleset/google.yaml
+
+  # ── 明确需要代理的境外服务（2.7 万条：OpenAI / Telegram / YouTube / Twitter…）
+  proxy:
+    type: http
+    behavior: domain
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/proxy.txt"
+    path: ./ruleset/proxy.yaml
+
+  # ── 中国域名白名单（11 万条，国内网站全靠它兜住，绝不能省）
+  direct:
+    type: http
+    behavior: domain
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/direct.txt"
+    path: ./ruleset/direct.yaml
+
+  # ── 局域网网段
+  lancidr:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/lancidr.txt"
+    path: ./ruleset/lancidr.yaml
+
+  # ── 中国 IP 段
+  cncidr:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/cncidr.txt"
+    path: ./ruleset/cncidr.yaml
+
+  # ── Telegram IP 段
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/telegramcidr.txt"
+    path: ./ruleset/telegramcidr.yaml
+
+  # ── 被墙域名清单
+  gfw:
+    type: http
+    behavior: domain
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/gfw.txt"
+    path: ./ruleset/gfw.yaml
+
+  # ── GreatFire（反审查站点）
+  greatfire:
+    type: http
+    behavior: domain
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/greatfire.txt"
+    path: ./ruleset/greatfire.yaml
+
+  # ── 非中国国家顶级域（+.gov / +.mil / +.ai …）
+  #    注意：它不含 +.com，别指望它兜住 .com
+  tld-not-cn:
+    type: http
+    behavior: domain
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/tld-not-cn.txt"
+    path: ./ruleset/tld-not-cn.yaml
+
+# ══════════════════════════════════════════════════════════════════════════
+#  规则顺序 = Loyalsoldier 官方推荐顺序，首个匹配生效，不要随意调换
+# ══════════════════════════════════════════════════════════════════════════
+rules:
+
+  # ── ① 本地管理面板：必须排最前，否则开了代理反而打不开自己的控制台
+  - 'DOMAIN,clash.razord.top,DIRECT'
+  - 'DOMAIN,yacd.haishan.me,DIRECT'
+
+  # ── ② 进程规则
+  - 'RULE-SET,applications,DIRECT'
+
+  # ── ③ 私有网络域名
+  - 'RULE-SET,private,DIRECT'
+
+  # ── ④ 广告拦截
+  - 'RULE-SET,reject,REJECT'
+
+  # ── ⑤ Apple / iCloud 直连
+  - 'RULE-SET,icloud,DIRECT'
+  - 'RULE-SET,apple,DIRECT'
+
+  # ── ⑥ 明确走代理的境外服务
+  - 'RULE-SET,google,PROXY'
+  - 'RULE-SET,proxy,PROXY'
+
+  # ── ⑦ 明确直连的国内域名（11 万条）
+  - 'RULE-SET,direct,DIRECT'
+
+  # ── ⑧ IP 层兜底（no-resolve：不再为此解析域名，省一次 DNS）
+  - 'RULE-SET,lancidr,DIRECT,no-resolve'
+  - 'RULE-SET,cncidr,DIRECT,no-resolve'
+  - 'GEOIP,CN,DIRECT,no-resolve'
+  - 'RULE-SET,telegramcidr,PROXY,no-resolve'
+
+  # ── ⑨ 被墙域名
+  - 'RULE-SET,gfw,PROXY'
+  - 'RULE-SET,greatfire,PROXY'
+
+  # ── ⑩ 非中国 TLD 兜底
+  - 'RULE-SET,tld-not-cn,PROXY'
+
+  # ── ⑪ 漏网之鱼：未收录的一律走代理（写在最后，必须是最后一条）
+  - 'MATCH,PROXY'
